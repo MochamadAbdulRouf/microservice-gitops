@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet 
+metadata:
+  name: devdash-appset
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+        - service: api-gateway
+          port: "3000"
+          replicas: "2"
+        - service: weather-service
+          port: "3001"
+          replicas: "2"
+        - service: quote-service
+          port: "3002"
+          replicas: "2"
+            
+    template: 
+      metadata:
+        name: '{{service}}'
+        namespace: argocd
+        finalizers:
+          - resources-finalizer.argocd.argoproj.io        
+      spec:
+        project: devdash
+
+        source:
+          repoURL: https://github.com/MochamadAbdulRouf/microservice-gitops
+          targetRevision: main
+          path: 'apps/{{service}}'
+
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: devdash
+
+        syncPolicy:
+          automated:
+            prune: true 
+            selfHeal: true 
+
+          syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+
+          retry:
+            limit: 5
+            backoff:
+              duration: 5s
+              factor: 2
+              maxDuration: 3m 
+          
+        ignoreDifferences:
+          - group: apps
+            kind: Deployment
+            jsonPointers:
+              - /spec/replicas

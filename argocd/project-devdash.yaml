@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devdash
+  namespace: argocd
+spec:
+  description: "DevDash project Microservices"
+
+  sourceRepos: 
+  - https://github.com/MochamadAbdulRouf/microservice-gitops
+
+  destinations:
+  - namespace: devdash
+    server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+
+  namespaceResourceWhitelist:
+  - group: apps
+    kind: Deployment
+  - group: ''
+    kind: Service
+  - group: ''
+    kind: Secret
+  - group: ''
+    kind: ConfigMap
+  - group: networking.k8s.io
+    kind: Ingress
+  - group: autoscaling
+    kind: HorizontalPodAutoscaler
+
+  roles:
+  - name: developer
+    description: "DevDash developer — sync only"
+    policies:
+    - p, proj:devdash:developer, applications, get,    devdash/*, allow
+    - p, proj:devdash:developer, applications, sync,   devdash/*, allow
+    - p, proj:devdash:developer, applications, create, devdash/*, deny
+    - p, proj:devdash:developer, applications, delete, devdash/*, deny
+    jwtTokens:
+    - iat: 1704067200
