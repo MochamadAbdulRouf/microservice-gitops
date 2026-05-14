@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: quote-service
-        image: mochabdulrouf/quote-service:b031299
+        image: mochabdulrouf/quote-service:c44c92c
         ports:
         - containerPort: 3002
         env:
