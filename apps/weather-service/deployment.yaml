@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: weather-service
-        image: mochabdulrouf/weather-service:latest
+        image: mochabdulrouf/weather-service:b031299
         ports:
         - containerPort: 3001
         env:
