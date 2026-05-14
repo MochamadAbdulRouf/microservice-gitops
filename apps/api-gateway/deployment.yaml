@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: mochabdulrouf/api-gateway:c44c92c
+          image: mochabdulrouf/api-gateway:392d30c
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
